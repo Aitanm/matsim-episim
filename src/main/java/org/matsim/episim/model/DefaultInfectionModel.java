@@ -251,7 +251,7 @@ public final class DefaultInfectionModel extends AbstractInfectionModel {
 		Map<String, Restriction> r = getRestrictions();
 
 		double exposure = Math.max(r.get(act1.getContainerName()).getExposure(), r.get(act2.getContainerName()).getExposure());
-		double contactIntensity = Math.max(act1.getContactIntensity(), act2.getContactIntensity());
+		double contactIntensity = Math.min(act1.getContactIntensity(), act2.getContactIntensity());
 
 		// note that for 1pct runs, calibParam is of the order of one, which means that for typical times of 100sec or more,
 		// exp( - 1 * 1 * 100 ) \approx 0, and thus the infection proba becomes 1.  Which also means that changes in contactIntensity has
