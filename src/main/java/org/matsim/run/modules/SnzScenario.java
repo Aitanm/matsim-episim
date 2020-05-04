@@ -38,7 +38,7 @@ public class SnzScenario extends AbstractModule {
 			"pt", "work", "leisure", "educ_kiga", "educ_primary", "educ_secondary", "educ_higher", "shopping", "errands", "business"
 	};
 
-	public static void setContactIntensities(EpisimConfigGroup episimConfig) {
+	public static void setContactIntensities(EpisimConfigGroup episimConfig) {	
 		episimConfig.getOrAddContainerParams("pt")
 				.setContactIntensity(10.0);
 		episimConfig.getOrAddContainerParams("tr")
@@ -52,7 +52,7 @@ public class SnzScenario extends AbstractModule {
 		episimConfig.getOrAddContainerParams("educ_secondary")
 				.setContactIntensity(2.0);
 		episimConfig.getOrAddContainerParams("home")
-				.setContactIntensity(3.0);
+				.setContactIntensity(1.0);
 	}
 
 	public static void addParams(EpisimConfigGroup episimConfig) {
@@ -83,7 +83,7 @@ public class SnzScenario extends AbstractModule {
 		episimConfig.setFacilitiesHandling(EpisimConfigGroup.FacilitiesHandling.snz);
 
 		episimConfig.setSampleSize(0.25);
-		episimConfig.setCalibrationParameter(0.000_001_7);
+		episimConfig.setCalibrationParameter(0.000_002_8);
 		addParams(episimConfig);
 		setContactIntensities(episimConfig);
 
@@ -114,7 +114,7 @@ public class SnzScenario extends AbstractModule {
 		episimConfig.setInitialInfections(50);
 		episimConfig.setInitialInfectionDistrict("Berlin");
 		episimConfig.setPolicy(FixedPolicy.class, buildPolicyBerlin(offset)	);
-		config.controler().setOutputDirectory("./output-berlinV2-google-progr" + offset);
+		config.controler().setOutputDirectory("./output-berlinV2-calibr-" + offset);
 	}
 
 	private void prepareRunBerlin(Config config, EpisimConfigGroup episimConfig, int offset) {
@@ -193,25 +193,65 @@ public class SnzScenario extends AbstractModule {
 	/* package private for a test */ static com.typesafe.config.Config buildPolicyBerlin(int offset){
 		FixedPolicy.ConfigBuilder builder = FixedPolicy.config();
 		{
-			final int firstDay = 17 - offset; // 2 days earlier than previously
-			final int lastDay = 31 - offset; // 2 days earlier than previously
-			LinearInterpolation interpolation = new LinearInterpolation( firstDay, 1., lastDay, 0.45 );
+			final int firstDay = 16 - offset;
+			final int lastDay = 23 - offset;
+			LinearInterpolation interpolation = new LinearInterpolation( firstDay, 1., lastDay, 0.8 );
 			for( int day = firstDay ; day <= lastDay ; day++ ){
 				builder.restrict( day, interpolation.getValue( day ), "work" );
 			}
 		}
 		{
-			final int firstDay = 17 - offset;
-			final int lastDay = 31 - offset;
+			final int firstDay = 23 - offset;
+			final int lastDay = 30 - offset;
+			LinearInterpolation interpolation = new LinearInterpolation( firstDay, 0.8, lastDay, 0.5 );
+			for( int day = firstDay ; day <= lastDay ; day++ ){
+				builder.restrict( day, interpolation.getValue( day ), "work" );
+			}
+		}
+		{
+			final int firstDay = 30 - offset;
+			final int lastDay = 37 - offset;
+			LinearInterpolation interpolation = new LinearInterpolation( firstDay, 0.5, lastDay, 0.45 );
+			for( int day = firstDay ; day <= lastDay ; day++ ){
+				builder.restrict( day, interpolation.getValue( day ), "work" );
+			}
+		}
+		{
+			final int firstDay = 46 - offset;
+			final int lastDay = 60 - offset;
+			LinearInterpolation interpolation = new LinearInterpolation( firstDay, 0.45, lastDay, 0.55 );
+			for( int day = firstDay ; day <= lastDay ; day++ ){
+				builder.restrict( day, interpolation.getValue( day ), "work" );
+			}
+		}
+		{
+			final int firstDay = 24 - offset;
+			final int lastDay = 38 - offset;
 			LinearInterpolation interpolation = new LinearInterpolation( firstDay, 1., lastDay, 0.1 );
 			for( int day = firstDay ; day <= lastDay ; day++ ){
 				builder.restrict( day, interpolation.getValue( day ), "leisure" );
 			}
 		}
 		{
-			final int firstDay = 24 - offset;
-			final int lastDay = 31 - offset;
-			LinearInterpolation interpolation = new LinearInterpolation( firstDay, 1., lastDay, 0.5 );
+			final int firstDay = 9 - offset;
+			final int lastDay = 16 - offset;
+			LinearInterpolation interpolation = new LinearInterpolation( firstDay, 1., lastDay, 0.95 );
+			for( int day = firstDay ; day <= lastDay ; day++ ){
+				builder.restrict( day, interpolation.getValue( day ), "shopping", "errands", "business" );
+			}
+		}
+		{
+			final int firstDay = 16 - offset;
+			final int lastDay = 23 - offset;
+			LinearInterpolation interpolation = new LinearInterpolation( firstDay, 0.95, lastDay, 0.85 );
+			for( int day = firstDay ; day <= lastDay ; day++ ){
+				builder.restrict( day, interpolation.getValue( day ), "shopping", "errands", "business" );
+			}
+		}
+		{
+			final int firstDay = 23 - offset;
+			final int lastDay = 30 - offset;
+			LinearInterpolation interpolation = new LinearInterpolation( firstDay, 0.85, lastDay, 0.4 );
 			for( int day = firstDay ; day <= lastDay ; day++ ){
 				builder.restrict( day, interpolation.getValue( day ), "shopping", "errands", "business" );
 			}
@@ -244,7 +284,11 @@ public class SnzScenario extends AbstractModule {
 				.restrict(23 - offset, 0.1, "educ_primary", "educ_kiga") // yyyy I thought that school closures started on day 26. --?? kai,
 				 // apr'20
 				.restrict(23 - offset, 0., "educ_secondary", "educ_higher")
-				.restrict(74 - offset, 0.5, "educ_primary", "educ_kiga") // 4/may.  Already "history" (on 30/apr).  :-)
+//				.restrict(60 - offset, 0.1, "educ_secondary")
+//				.restrict(67 - offset, 0.2, "educ_secondary")
+//				.restrict(74 - offset, 0.3, "educ_secondary")
+//				.restrict(74 - offset, 0.2, "educ_primary")
+//				.restrict(74 - offset, 0.5, "educ_primary", "educ_kiga") // 4/may.  Already "history" (on 30/apr).  :-)
 		       ;
 		return builder.build();
 	}
