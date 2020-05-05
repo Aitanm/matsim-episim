@@ -38,19 +38,18 @@ import java.util.List;
 public final class BerlinSchoolClosureAndTracing implements BatchRun<BerlinSchoolClosureAndTracing.Params> {
 
 	public static final List<Option> OPTIONS = List.of(
-			Option.of("Contact tracing", 67)
+			Option.of("Contact tracing", 81)
 					.measure("Tracing Distance", "tracingDayDistance")
-					.measure("Tracing Probability", "tracingProbability"),
+					.measure("Tracing Probability", "tracingProbability")
+					.measure("Tracing Delay", "tracingDelay")
+					.measure("Quarantine Household Members", "quarantineHouseholdMembers"),
 
-			Option.of("Out-of-home activities limited", "By type and percent (%)", 67)
-					.measure("Work activities", "remainingFractionWork")
-					.measure("Other activities", "remainingFractionShoppingBusinessErrands")
-					.measure("Leisure activities", "remainingFractionLeisure"),
+			Option.of("Additional work, business, shopping and errands acitivities", "By type and percent (%)", 74)
+					.measure("Activities", "additionalFractionWorkShoppingBusinessErrands"),
 
-			Option.of("Reopening of educational facilities", "Students returning (%)", 74)
-					.measure("Going to primary school", "remainingFractionPrima")
-					.measure("Going to kindergarten", "remainingFractionKiga")
-					.measure("Going to secondary/univ.", "remainingFractionSeconHigher")
+			Option.of("Additional educational activities", "Students returning (%)", 81)
+					.measure("Going to kindergarten", "additionalFractionKiga")
+					.measure("Going to schools", "additionalFractionSchools")
 	);
 
 	@Override
