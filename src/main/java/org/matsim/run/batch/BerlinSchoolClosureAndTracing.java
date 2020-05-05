@@ -176,12 +176,14 @@ public final class BerlinSchoolClosureAndTracing implements BatchRun<BerlinSchoo
 			}
 		}
 		builder
+				.restrict(74 - offset, 0.55 + params.additionalFractionWorkShoppingBusinessErrands, "work")
+				.restrict(74 - offset, 0.4 + params.additionalFractionWorkShoppingBusinessErrands, "shopping", "errands", "business")
 				//day 23 is the saturday 14th of march, so the weekend before schools got closed..
 				.restrict(23 - offset, 0.1, "educ_primary", "educ_kiga")
 				.restrict(23 - offset, 0., "educ_secondary", "educ_higher")
-				.restrict(81 - offset, 0.1 + params.remainingFractionSchools, "educ_primary")
-				.restrict(81 - offset, params.remainingFractionSchools, "educ_secondary")
-				.restrict(81 - offset, params.remainingFractionKiga, "educ_kiga")
+				.restrict(81 - offset, 0.1 + params.additionalFractionSchools, "educ_primary")
+				.restrict(81 - offset, 0. + params.additionalFractionSchools, "educ_secondary")
+				.restrict(81 - offset, 0.1 + params.additionalFractionKiga, "educ_kiga")
 		       ;
 		return builder.build();
 	}
@@ -191,25 +193,22 @@ public final class BerlinSchoolClosureAndTracing implements BatchRun<BerlinSchoo
 		@IntParameter({-6})
 		int offset;
 
-		@Parameter({0.5, 0.1})
-		double remainingFractionKiga;
+		@Parameter({0., 0.4})
+		double additionalFractionKiga;
 
-		@Parameter({0.4, 0.2, 0.})
-		double remainingFractionSchools;
+		@Parameter({0., 0.2, 0.4})
+		double additionalFractionSchools;
 
-		@Parameter({0.55, 0.65})
-		double remainingFractionWork;
-
-		@Parameter({0.4, 0.5})
-		double remainingFractionShoppingBusinessErrands;
-
+		@Parameter({0., 0.1})
+		double additionalFractionWorkShoppingBusinessErrands;
+		
 		@IntParameter({1, 3, 5})
 		int tracingDayDistance;
 		
 		@IntParameter({0, 1, 3})
 		int tracingDelay;
 
-		@Parameter({1.0, 0.75, 0.5})
+		@Parameter({1.0, 0.66, 0.33, 0})
 		double tracingProbability;
 		
 		@StringParameter({"true", "false"})
