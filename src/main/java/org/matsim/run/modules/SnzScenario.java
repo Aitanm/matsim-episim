@@ -114,7 +114,7 @@ public class SnzScenario extends AbstractModule {
 		episimConfig.setInitialInfections(50);
 		episimConfig.setInitialInfectionDistrict("Berlin");
 		episimConfig.setPolicy(FixedPolicy.class, buildPolicyBerlin(offset)	);
-		config.controler().setOutputDirectory("./output-berlinV2-calibr-" + offset);
+		config.controler().setOutputDirectory("./output-berlinV2-calibr-schoolsPrimaKiga-" + offset);
 	}
 
 	private void prepareRunBerlin(Config config, EpisimConfigGroup episimConfig, int offset) {
@@ -171,18 +171,18 @@ public class SnzScenario extends AbstractModule {
 				.build();
 	}
 
-	static class LinearInterpolation{
+	public static class LinearInterpolation{
 		private final long firstDay;
 		private final double firstValue;
 		private final long lastDay;
 		private final double lastValue;
-		LinearInterpolation( long firstDay, double firstValue, long lastDay, double lastValue ) {
+		public LinearInterpolation( long firstDay, double firstValue, long lastDay, double lastValue ) {
 			this.firstDay = firstDay;
 			this.firstValue = firstValue;
 			this.lastDay = lastDay;
 			this.lastValue = lastValue;
 		}
-		double getValue( long day ) {
+		public double getValue( long day ) {
 			return firstValue + (lastValue-firstValue)*(day-firstDay)/(lastDay-firstDay);
 			// corner cases:
 			// * day=firstDay --> fraction=firstValue
@@ -193,32 +193,32 @@ public class SnzScenario extends AbstractModule {
 	/* package private for a test */ static com.typesafe.config.Config buildPolicyBerlin(int offset){
 		FixedPolicy.ConfigBuilder builder = FixedPolicy.config();
 		{
-			final int firstDay = 16 - offset;
-			final int lastDay = 23 - offset;
+			final int firstDay = 16 - offset; //sat, 07.03.
+			final int lastDay = 23 - offset; //sat, 14.03.
 			LinearInterpolation interpolation = new LinearInterpolation( firstDay, 1., lastDay, 0.8 );
 			for( int day = firstDay ; day <= lastDay ; day++ ){
 				builder.restrict( day, interpolation.getValue( day ), "work" );
 			}
 		}
 		{
-			final int firstDay = 23 - offset;
-			final int lastDay = 30 - offset;
+			final int firstDay = 23 - offset; //sat, 14.03.
+			final int lastDay = 30 - offset; //sat, 21.03.
 			LinearInterpolation interpolation = new LinearInterpolation( firstDay, 0.8, lastDay, 0.5 );
 			for( int day = firstDay ; day <= lastDay ; day++ ){
 				builder.restrict( day, interpolation.getValue( day ), "work" );
 			}
 		}
 		{
-			final int firstDay = 30 - offset;
-			final int lastDay = 37 - offset;
+			final int firstDay = 30 - offset; //sat, 21.03.
+			final int lastDay = 37 - offset; //sat, 28.03.
 			LinearInterpolation interpolation = new LinearInterpolation( firstDay, 0.5, lastDay, 0.45 );
 			for( int day = firstDay ; day <= lastDay ; day++ ){
 				builder.restrict( day, interpolation.getValue( day ), "work" );
 			}
 		}
 		{
-			final int firstDay = 46 - offset;
-			final int lastDay = 60 - offset;
+			final int firstDay = 46 - offset; //mon, 06.04.
+			final int lastDay = 60 - offset; //mon, 20.04.
 			LinearInterpolation interpolation = new LinearInterpolation( firstDay, 0.45, lastDay, 0.55 );
 			for( int day = firstDay ; day <= lastDay ; day++ ){
 				builder.restrict( day, interpolation.getValue( day ), "work" );
@@ -288,7 +288,7 @@ public class SnzScenario extends AbstractModule {
 //				.restrict(67 - offset, 0.2, "educ_secondary")
 //				.restrict(74 - offset, 0.3, "educ_secondary")
 //				.restrict(74 - offset, 0.2, "educ_primary")
-//				.restrict(74 - offset, 0.5, "educ_primary", "educ_kiga") // 4/may.  Already "history" (on 30/apr).  :-)
+				.restrict(74 - offset, 0.5, "educ_primary", "educ_kiga") // 4/may.  Already "history" (on 30/apr).  :-)
 		       ;
 		return builder.build();
 	}
