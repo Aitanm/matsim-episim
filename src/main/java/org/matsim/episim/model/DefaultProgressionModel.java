@@ -127,8 +127,8 @@ public class DefaultProgressionModel implements ProgressionModel {
 				throw new IllegalStateException("Unexpected value: " + person.getDiseaseStatus());
 		}
 
-		// clear tracing older than 7 days
-		person.clearTraceableContractPersons(now - 7 * DAY);
+		// clear tracing older than certain days
+		person.clearTraceableContractPersons(now - 14 * DAY);
 	}
 
 	/**
