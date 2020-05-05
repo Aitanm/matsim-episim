@@ -97,6 +97,7 @@ public final class BerlinSchoolClosureAndTracing implements BatchRun<BerlinSchoo
 		tracingConfig.setPutTraceablePersonsInQuarantineAfterDay(81 - offset);
 		tracingConfig.setTracingProbability(params.tracingProbability);
 		tracingConfig.setTracingDayDistance(params.tracingDayDistance);
+		tracingConfig.setTracingDelay(params.tracingDelay);
 		tracingConfig.setQuarantineHouseholdMembers(params.quarantineHouseholdMembers.contains("true"));
 
 
@@ -204,7 +205,7 @@ public final class BerlinSchoolClosureAndTracing implements BatchRun<BerlinSchoo
 		@IntParameter({1, 3, 5})
 		int tracingDayDistance;
 		
-		@IntParameter({0, 7, 10})
+		@IntParameter({0, 5, 7})
 		int tracingDelay;
 
 		@Parameter({1.0, 0.66, 0.33, 0})
