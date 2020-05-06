@@ -175,7 +175,7 @@ public final class DefaultInfectionModel extends AbstractInfectionModel {
 					continue;
 				}
 				if (trackingEnabled) {
-					trackContactPerson(personLeavingContainer, contactPerson, now);
+					trackContactPerson(personLeavingContainer, contactPerson, now, infectionType);
 				}
 			}
 
@@ -276,7 +276,10 @@ public final class DefaultInfectionModel extends AbstractInfectionModel {
 
 	}
 
-	private void trackContactPerson(EpisimPerson personLeavingContainer, EpisimPerson otherPerson, double now) {
+	private void trackContactPerson(EpisimPerson personLeavingContainer, EpisimPerson otherPerson, double now, StringBuilder infectionType) {
+		if (infectionType.indexOf("pt") >= 0 || infectionType.indexOf("shop") >= 0) {
+			return;
+		}
 		personLeavingContainer.addTraceableContactPerson(otherPerson, now);
 		otherPerson.addTraceableContactPerson(personLeavingContainer, now);
 	}
