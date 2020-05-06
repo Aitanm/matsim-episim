@@ -39,13 +39,12 @@ public final class BerlinSchoolClosureAndTracing implements BatchRun<BerlinSchoo
 
 	public static final List<Option> OPTIONS = List.of(
 			Option.of("Contact tracing", 81)
-					.measure("Tracing Distance", "tracingDayDistance")
-					.measure("Tracing Probability", "tracingProbability")
-					.measure("Tracing Delay", "tracingDelay")
-					.measure("Quarantine Household Members", "quarantineHouseholdMembers"),
+					.measure("Tracing Distance", "equipmentRate")
+					.measure("Tracing Delay", "tracingDelay"),
 
-			Option.of("Additional work, business, shopping and errands acitivities", "By type and percent (%)", 74)
-					.measure("Activities", "additionalFractionWorkShoppingBusinessErrands"),
+			Option.of("Additional acitivities", "By type and percent (%)", 74)
+					.measure("Work, business, shopping and errands", "additionalFractionWorkShoppingBusinessErrands")
+					.measure("Leisure", "additionalFractionLeisure"),
 
 			Option.of("Additional educational activities", "Students returning (%)", 81)
 					.measure("Going to kindergarten", "additionalFractionKiga")
@@ -95,10 +94,11 @@ public final class BerlinSchoolClosureAndTracing implements BatchRun<BerlinSchoo
 		TracingConfigGroup tracingConfig = ConfigUtils.addOrGetModule(config, TracingConfigGroup.class);
 
 		tracingConfig.setPutTraceablePersonsInQuarantineAfterDay(81 - offset);
-		tracingConfig.setTracingProbability(params.tracingProbability);
-		tracingConfig.setTracingDayDistance(params.tracingDayDistance);
+		tracingConfig.setTracingProbability(0.8);
+		tracingConfig.setTracingDayDistance(3);
 		tracingConfig.setTracingDelay(params.tracingDelay);
-		tracingConfig.setQuarantineHouseholdMembers(params.quarantineHouseholdMembers.contains("true"));
+		//tracingConfig.setEquipmentRate(params.equipmentRate); //ToDo Christian 
+		tracingConfig.setQuarantineHouseholdMembers(false);
 
 
 		episimConfig.setPolicy(FixedPolicy.class, buildPolicyBerlin(offset, params)	);
@@ -178,6 +178,7 @@ public final class BerlinSchoolClosureAndTracing implements BatchRun<BerlinSchoo
 		builder
 				.restrict(74 - offset, 0.55 + params.additionalFractionWorkShoppingBusinessErrands, "work")
 				.restrict(74 - offset, 0.4 + params.additionalFractionWorkShoppingBusinessErrands, "shopping", "errands", "business")
+				.restrict(74 - offset, 0.1 + params.additionalFractionLeisure, "leisure")
 				//day 23 is the saturday 14th of march, so the weekend before schools got closed..
 				.restrict(23 - offset, 0.1, "educ_primary", "educ_kiga")
 				.restrict(23 - offset, 0., "educ_secondary", "educ_higher")
@@ -199,20 +200,17 @@ public final class BerlinSchoolClosureAndTracing implements BatchRun<BerlinSchoo
 		@Parameter({0., 0.2, 0.4})
 		double additionalFractionSchools;
 
-		@Parameter({0., 0.1})
+		@Parameter({0., 0.2})
 		double additionalFractionWorkShoppingBusinessErrands;
 		
-		@IntParameter({1, 3, 5})
-		int tracingDayDistance;
+		@Parameter({0., 0.2})
+		double additionalFractionLeisure;
 		
-		@IntParameter({0, 5, 7})
+		@IntParameter({3, 5})
 		int tracingDelay;
 
 		@Parameter({1.0, 0.66, 0.33, 0})
-		double tracingProbability;
-		
-		@StringParameter({"true", "false"})
-		String quarantineHouseholdMembers;
+		double equipmentRate;
 
 	}
 
