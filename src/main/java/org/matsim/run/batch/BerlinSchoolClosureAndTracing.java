@@ -39,10 +39,10 @@ public final class BerlinSchoolClosureAndTracing implements BatchRun<BerlinSchoo
 
 	public static final List<Option> OPTIONS = List.of(
 			Option.of("Contact tracing", 81)
-					.measure("Tracing Distance", "equipmentRate")
+					.measure("Equipment Rate", "equipmentRate")
 					.measure("Tracing Delay", "tracingDelay"),
 
-			Option.of("Additional acitivities", "By type and percent (%)", 74)
+			Option.of("Additional activities", "By type and percent (%)", 74)
 					.measure("Work, business, shopping and errands", "additionalFractionWorkShoppingBusinessErrands")
 					.measure("Leisure", "additionalFractionLeisure"),
 
@@ -97,19 +97,19 @@ public final class BerlinSchoolClosureAndTracing implements BatchRun<BerlinSchoo
 		tracingConfig.setTracingProbability(0.8);
 		tracingConfig.setTracingDayDistance(3);
 		tracingConfig.setTracingDelay(params.tracingDelay);
-		//tracingConfig.setEquipmentRate(params.equipmentRate); //ToDo Christian 
+		tracingConfig.setEquipmentRate(params.equipmentRate);
 		tracingConfig.setQuarantineHouseholdMembers(false);
 
 
 		episimConfig.setPolicy(FixedPolicy.class, buildPolicyBerlin(offset, params)	);
-	
+
 		String policyFileName = "input/policy" + id + ".conf";
 		episimConfig.setOverwritePolicyLocation(policyFileName);
 
 		return config;
 	}
 
-	private com.typesafe.config.Config buildPolicyBerlin(int offset, BerlinSchoolClosureAndTracing.Params params) {		
+	private com.typesafe.config.Config buildPolicyBerlin(int offset, BerlinSchoolClosureAndTracing.Params params) {
 		FixedPolicy.ConfigBuilder builder = FixedPolicy.config();
 		{
 			final int firstDay = 16 - offset; //sat, 07.03.
@@ -190,7 +190,7 @@ public final class BerlinSchoolClosureAndTracing implements BatchRun<BerlinSchoo
 	}
 
 	public static final class Params {
-		
+
 		@IntParameter({-6})
 		int offset;
 
@@ -202,10 +202,10 @@ public final class BerlinSchoolClosureAndTracing implements BatchRun<BerlinSchoo
 
 		@Parameter({0., 0.2})
 		double additionalFractionWorkShoppingBusinessErrands;
-		
+
 		@Parameter({0., 0.2})
 		double additionalFractionLeisure;
-		
+
 		@IntParameter({3, 5})
 		int tracingDelay;
 
