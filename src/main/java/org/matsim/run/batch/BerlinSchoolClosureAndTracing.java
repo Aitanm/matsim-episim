@@ -40,6 +40,7 @@ public final class BerlinSchoolClosureAndTracing implements BatchRun<BerlinSchoo
 	public static final List<Option> OPTIONS = List.of(
 			Option.of("Contact tracing", 81)
 					.measure("Equipment Rate", "equipmentRate")
+					.measure("Tracing Period", "tracingPeriod")
 					.measure("Tracing Delay", "tracingDelay"),
 
 			Option.of("Additional activities", "By type and percent (%)", 74)
@@ -95,7 +96,7 @@ public final class BerlinSchoolClosureAndTracing implements BatchRun<BerlinSchoo
 
 		tracingConfig.setPutTraceablePersonsInQuarantineAfterDay(81 - offset);
 		tracingConfig.setTracingProbability(0.8);
-		tracingConfig.setTracingDayDistance(3);
+		tracingConfig.setTracingDayDistance(params.tracingPeriod);
 		tracingConfig.setTracingDelay(params.tracingDelay);
 		tracingConfig.setEquipmentRate(params.equipmentRate);
 		tracingConfig.setQuarantineHouseholdMembers(false);
@@ -208,6 +209,9 @@ public final class BerlinSchoolClosureAndTracing implements BatchRun<BerlinSchoo
 
 		@IntParameter({3, 5})
 		int tracingDelay;
+
+		@IntParameter({3, 5})
+		int tracingPeriod;
 
 		@Parameter({1.0, 0.66, 0.33, 0})
 		double equipmentRate;
