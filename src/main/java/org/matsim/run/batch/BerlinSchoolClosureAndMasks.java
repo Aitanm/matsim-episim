@@ -205,7 +205,7 @@ public final class BerlinSchoolClosureAndMasks implements BatchRun<BerlinSchoolC
 		@Parameter({0., 0.2})
 		double additionalFractionLeisure;
 
-		@StringParameter({"NONE", "CLOTH", "SURGICAL"})
+		@StringParameter({"CLOTH", "SURGICAL", "N95"})
 		String mask;
 
 		@Parameter({0., 0.5, 0.9, 1.})
