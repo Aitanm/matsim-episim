@@ -207,7 +207,7 @@ public final class BerlinSchoolClosureAndTracing implements BatchRun<BerlinSchoo
 		@Parameter({0., 0.2})
 		double additionalFractionLeisure;
 
-		@IntParameter({3, 5})
+		@IntParameter({0, 1, 2, 3, 5})
 		int tracingDelay;
 
 		@IntParameter({3, 5})
