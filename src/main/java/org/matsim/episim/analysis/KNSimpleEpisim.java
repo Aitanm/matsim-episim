@@ -33,10 +33,10 @@ class KNSimpleEpisim{
 		double infectedCumulative = infected;
 		for ( int day=0 ; day<100 ; day++ ) {
 			if ( day>=25 && day <=35 ) {
-				theta -= 0.03;
+				theta -= 0.0;
 			}
 			if ( day==30 ) {
-				theta -= 0.;
+				theta -= 0.3;
 //			} else if ( day==60 ) {
 //				theta = 0.1;
 			}
@@ -57,6 +57,7 @@ class KNSimpleEpisim{
 		log.info( infectedsCumulative );
 
 		Column<Double> yColumn = DoubleColumn.create( "infectedCumulative", infectedsCumulative );
+		Column<Double> y2Column = DoubleColumn.create( "infecteds", infecteds );
 		Column<Double> xColumn = DoubleColumn.create( "day", days );
 
 		DoubleColumn diffColumn = DoubleColumn.create( "newlyInfected", infectedsCumulative ).difference();
@@ -69,10 +70,11 @@ class KNSimpleEpisim{
 
 		Trace trace = ScatterTrace.builder( xColumn, yColumn ).name( yColumn.name() ).build();
 		Trace trace2 = BarTrace.builder( xColumnAsString, diffColumn ).name( diffColumn.name() ).build();
+		Trace trace3 = ScatterTrace.builder( xColumn, y2Column ).name( y2Column.name() ).build();
 
-		Figure fig = new Figure(trace, trace2);
+		Figure fig = new Figure(trace, trace2, trace3);
 
-		Axis yAxis = Axis.builder().type( Axis.Type.LOG).build();
+		Axis yAxis = Axis.builder().type( Axis.Type.LINEAR).range( 0., 5000. ).build();
 		Layout layout = Layout.builder().width( 800 ).height(500 ).yAxis( yAxis ).build();
 		fig.setLayout( layout );
 

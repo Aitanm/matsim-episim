@@ -5,6 +5,7 @@ import com.google.inject.Provides;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
 import org.matsim.episim.EpisimConfigGroup;
+import org.matsim.episim.model.AbstractInfectionModel;
 import org.matsim.episim.model.AgeDependentProgressionModel;
 import org.matsim.episim.model.ProgressionModel;
 
@@ -45,7 +46,7 @@ public abstract class AbstractSnzScenario2020 extends AbstractModule {
 				.setContactIntensity(2.0);
 		episimConfig.getOrAddContainerParams("home")
 				.setContactIntensity(3.0 / 4.);
-		episimConfig.getOrAddContainerParams("quarantine_home")
+		episimConfig.getOrAddContainerParams( AbstractInfectionModel.QUARANTINE_HOME )
 				.setContactIntensity(3.0 / 4. / 3.);
 	}
 
@@ -68,7 +69,7 @@ public abstract class AbstractSnzScenario2020 extends AbstractModule {
 		episimConfig.addContainerParams(new EpisimConfigGroup.InfectionParams("business"));
 
 		episimConfig.addContainerParams(new EpisimConfigGroup.InfectionParams("home"));
-		episimConfig.addContainerParams(new EpisimConfigGroup.InfectionParams("quarantine_home"));
+		episimConfig.addContainerParams(new EpisimConfigGroup.InfectionParams( AbstractInfectionModel.QUARANTINE_HOME ));
 	}
 
 	@Override

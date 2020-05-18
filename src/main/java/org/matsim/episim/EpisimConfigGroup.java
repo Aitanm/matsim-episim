@@ -454,7 +454,21 @@ public final class EpisimConfigGroup extends ReflectiveConfigGroup {
 		 */
 		all
 	}
-
+	// ---
+	private int additionalHospitalAdmissionOffset = 0;
+	/**
+	 * quick fix, should probably be a generally configurable progression model
+	 */
+	public final void setAdditionalHospitalAdmissionOffset( int val ) {
+		additionalHospitalAdmissionOffset = val;
+	}
+	/**
+	 * quick fix, should probably be a generally configurable progression model
+	 */
+	public final int getAdditionalHospitalAdmissionOffset() {
+		return additionalHospitalAdmissionOffset;
+	}
+	// ---
 	/**
 	 * Parameter set for one activity type.
 	 */
@@ -547,7 +561,5 @@ public final class EpisimConfigGroup extends ReflectiveConfigGroup {
 
 			return false;
 		}
-
 	}
-
 }
