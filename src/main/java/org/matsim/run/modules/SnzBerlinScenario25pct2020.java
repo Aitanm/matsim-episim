@@ -36,30 +36,31 @@ import javax.inject.Singleton;
  * @see AbstractSnzScenario
  */
 public class SnzBerlinScenario25pct2020 extends AbstractSnzScenario2020 {
+	private static final int alpha = 2; 
 
 	/**
 	 * The base policy based on actual restrictions in the past and google mobility data.
 	 */
 	public static FixedPolicy.ConfigBuilder basePolicy() {
-
+		
 		FixedPolicy.ConfigBuilder builder = FixedPolicy.config()
-				.interpolate("2020-03-06", "2020-03-13", Restriction.of(1), 0.8, "work")
-				.interpolate("2020-03-13", "2020-03-20", Restriction.of(0.8), 0.5, "work")
-				.interpolate("2020-03-20", "2020-03-27", Restriction.of(0.5), 0.45, "work")
-				.interpolate("2020-04-05", "2020-04-19", Restriction.of(0.45), 0.55, "work")
-				.interpolate("2020-04-20", "2020-04-27", Restriction.of(0.55), 0.6, "work")
+				.interpolate("2020-03-06", "2020-03-13", Restriction.of(1), Math.max( 0., 1. - alpha * 0.2 ), "work")
+				.interpolate("2020-03-13", "2020-03-20", Restriction.of(Math.max( 0., 1. - alpha * 0.2 )), Math.max( 0., 1. - alpha * 0.5 ), "work")
+				.interpolate("2020-03-20", "2020-03-27", Restriction.of(Math.max( 0., 1. - alpha * 0.5 )), Math.max( 0., 1. - alpha * 0.65 ), "work")
+				.interpolate("2020-04-05", "2020-04-19", Restriction.of(Math.max( 0., 1. - alpha * 0.65 )), Math.max( 0., 1. - alpha * 0.45 ), "work")
+				.interpolate("2020-04-20", "2020-04-27", Restriction.of(Math.max( 0., 1. - alpha * 0.45 )), Math.max( 0., 1. - alpha * 0.4 ), "work")
 
-				.interpolate("2020-03-13", "2020-03-27", Restriction.of(1), 0.1, "leisure", "visit", "shop_other")
+				.interpolate("2020-03-13", "2020-03-27", Restriction.of(Math.max( 0., 1. - alpha * 0.5 )), Math.max( 0., 1. - alpha * 0.9 ), "leisure", "visit", "shop_other")
 				.restrict("2020-04-27", Restriction.of(0.1, FaceMask.CLOTH), "shop_other")
 				
-				.interpolate("2020-02-28", "2020-03-06", Restriction.of(1), 0.95, "shop_daily", "errands", "business")
-				.interpolate("2020-03-06", "2020-03-13", Restriction.of(0.95), 0.85, "shop_daily", "errands", "business")
-				.interpolate("2020-03-13", "2020-03-20", Restriction.of(0.85), 0.4, "shop_daily", "errands", "business")
-				.interpolate("2020-04-20", "2020-04-27", Restriction.of(0.4), 0.5, "shop_daily", "errands", "business")
-				.interpolate("2020-04-28", "2020-05-04", Restriction.of(0.5, FaceMask.CLOTH), 0.55, "shop_daily", "errands", "business")
+				.interpolate("2020-02-28", "2020-03-06", Restriction.of(1), Math.max( 0., 1. - alpha * 0.05 ), "shop_daily", "errands", "business")
+				.interpolate("2020-03-06", "2020-03-13", Restriction.of(Math.max( 0., 1. - alpha * 0.05 )), Math.max( 0., 1. - alpha * 0.15 ), "shop_daily", "errands", "business")
+				.interpolate("2020-03-13", "2020-03-20", Restriction.of(Math.max( 0., 1. - alpha * 0.15 )), Math.max( 0., 1. - alpha * 0.6 ), "shop_daily", "errands", "business")
+				.interpolate("2020-04-20", "2020-04-27", Restriction.of(Math.max( 0., 1. - alpha * 0.6 )), Math.max( 0., 1. - alpha * 0.5 ), "shop_daily", "errands", "business")
+				.interpolate("2020-04-28", "2020-05-04", Restriction.of(Math.max( 0., 1. - alpha * 0.5 ), FaceMask.CLOTH), Math.max( 0., 1. - alpha * 0.45 ), "shop_daily", "errands", "business")
 
 				//saturday 14th of march, so the weekend before schools got closed..
-				.restrict("2020-03-14", 0.1, "educ_primary", "educ_kiga") 
+				.restrict("2020-03-14", Math.max( 0., 1. - alpha * 0.9 ), "educ_primary", "educ_kiga") 
 				.restrict("2020-03-14", 0., "educ_secondary", "educ_higher", "educ_tertiary", "educ_other")
 				
 				.restrict("2020-04-27", Restriction.of(1, FaceMask.CLOTH), "pt", "tr");
@@ -82,12 +83,13 @@ public class SnzBerlinScenario25pct2020 extends AbstractSnzScenario2020 {
 		episimConfig.setInitialInfections(50);
 		episimConfig.setInitialInfectionDistrict("Berlin");
 		episimConfig.setSampleSize(0.25);
-		episimConfig.setCalibrationParameter(0.000_002_3);
+		episimConfig.setCalibrationParameter(0.000_000_8);	
+//		episimConfig.setCalibrationParameter(0.000_002_4);
 
 		episimConfig.setStartDate("2020-02-13");
 		episimConfig.setPolicy(FixedPolicy.class, basePolicy().build());
 
-		config.controler().setOutputDirectory("./output-berlin-25pct-restricts-" + episimConfig.getStartDate());
+		config.controler().setOutputDirectory("./output-berlin-25pct-restricts-" + episimConfig.getStartDate() + "-" + alpha + "-" + episimConfig.getCalibrationParameter());
 
 
 		return config;
