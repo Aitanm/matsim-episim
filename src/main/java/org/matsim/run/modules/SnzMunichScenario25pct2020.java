@@ -43,7 +43,7 @@ import java.util.Map;
 import static org.matsim.episim.model.Transition.to;
 
 /**
- * Snz scenario for Berlin.
+ * Snz scenario for Munich.
  *
  * @see AbstractSnzScenario
  */
@@ -68,14 +68,14 @@ public class SnzMunichScenario25pct2020 extends AbstractSnzScenario2020 {
 				.restrict("2020-05-11", 0.2, "educ_secondary", "educ_higher", "educ_tertiary", "educ_other")
 				.restrict("2020-05-25", 0.3, "educ_kiga")
 				
-//				.restrict("2020-06-08", 1., "educ_primary", "educ_kiga", "educ_secondary", "educ_higher", "educ_tertiary", "educ_other")
-//				
-//				//Sommerferien
-//				.restrict("2020-06-25", 0.3, "educ_primary", "educ_kiga")
-//				.restrict("2020-06-25", 0.2, "educ_secondary", "educ_higher", "educ_tertiary", "educ_other")
+				.restrict("2020-06-08", 1., "educ_primary", "educ_kiga", "educ_secondary", "educ_higher", "educ_tertiary", "educ_other")
 				
-				//Ende der Sommerferien
-				.restrict("2020-08-10", 1., "educ_primary", "educ_kiga", "educ_secondary", "educ_higher", "educ_tertiary", "educ_other")
+//				//Sommerferien //TODO
+				.restrict("2020-07-25", 0.3, "educ_primary", "educ_kiga")
+				.restrict("2020-07-25", 0.2, "educ_secondary", "educ_higher", "educ_tertiary", "educ_other")
+				
+				//Ende der Sommerferien //TODO 
+				.restrict("2020-09-08", 1., "educ_primary", "educ_kiga", "educ_secondary", "educ_higher", "educ_tertiary", "educ_other")
 		;
 
 		return builder;
@@ -120,16 +120,16 @@ public class SnzMunichScenario25pct2020 extends AbstractSnzScenario2020 {
 
 		EpisimConfigGroup episimConfig = ConfigUtils.addOrGetModule(config, EpisimConfigGroup.class);
 
-		episimConfig.setInputEventsFile("../shared-svn/projects/episim/matsim-files/snz/BerlinV2/episim-input/be_2020_snz_episim_events_25pt.xml.gz");
+		episimConfig.setInputEventsFile("../shared-svn/projects/episim/matsim-files/snz/Munich/episim-input/mu_2020_snz_episim_events_25pt.xml.gz"); //TODO
 
-		config.plans().setInputFile("../shared-svn/projects/episim/matsim-files/snz/BerlinV2/episim-input/be_2020_snz_entirePopulation_emptyPlans_withDistricts_25pt.xml.gz");
+		config.plans().setInputFile("../shared-svn/projects/episim/matsim-files/snz/Munich/episim-input/mu_2020_snz_entirePopulation_noPlans_withDistricts_25pt.xml.gz"); //TODO
 
 		episimConfig.setInitialInfections(500);
-		episimConfig.setInitialInfectionDistrict("Berlin");
+		episimConfig.setInitialInfectionDistrict("München");//TODO
 		episimConfig.setSampleSize(0.25);
 		episimConfig.setCalibrationParameter(0.000_002_6);
 		episimConfig.setMaxInteractions(3);
-		String startDate = "2020-02-10";
+		String startDate = "2020-02-08";
 		episimConfig.setStartDate(startDate);
 
 		TracingConfigGroup tracingConfig = ConfigUtils.addOrGetModule(config, TracingConfigGroup.class);
@@ -143,12 +143,12 @@ public class SnzMunichScenario25pct2020 extends AbstractSnzScenario2020 {
 		tracingConfig.setQuarantineHouseholdMembers(true);
 		tracingConfig.setEquipmentRate(1.);
 		tracingConfig.setTracingDelay(2);
-		tracingConfig.setTracingCapacity(30);
+		tracingConfig.setTracingCapacity(Integer.MAX_VALUE); //TODO 
 
 		double alpha = 1.4;
 		double ciCorrection = 0.3;
 
-		File csv = new File("../shared-svn/projects/episim/matsim-files/snz/BerlinV2/episim-input/BerlinSnzData_daily_until20200524.csv");
+		File csv = new File("../shared-svn/projects/episim/matsim-files/snz/Munich/episim-input/MunichSnzData_daily_until20200531.csv"); //TODO
 		String dateOfCiChange = "2020-03-08";
 
 		episimConfig.setProgressionConfig(baseProgressionConfig(Transition.config()).build());
@@ -161,7 +161,7 @@ public class SnzMunichScenario25pct2020 extends AbstractSnzScenario2020 {
 		}
 
 		episimConfig.setPolicy(FixedPolicy.class, configBuilder.build());
-		config.controler().setOutputDirectory("./output-berlin-25pct-SNZrestrictsFromCSV-newprogr-tracing-linearExtra-30-500init-schoolsAfterSummer-nn-" + tracingProbability + "-" + alpha + "-" + ciCorrection + "-" + dateOfCiChange + "-" + episimConfig.getStartDate() + "-" + episimConfig.getCalibrationParameter());
+		config.controler().setOutputDirectory("./output-munich-25pct-SNZrestrictsFromCSV-newprogr-tracing-linearExtra-inf-500init-schoolsAfterSummer-nn-" + tracingProbability + "-" + alpha + "-" + ciCorrection + "-" + dateOfCiChange + "-" + episimConfig.getStartDate() + "-" + episimConfig.getCalibrationParameter() + "-2"); //TODO
 //		config.controler().setOutputDirectory("./output-berlin-25pct-unrestricted-calibr-" + episimConfig.getCalibrationParameter());
 
 
