@@ -47,14 +47,15 @@ public class SantiagoScenario extends AbstractModule {
 	@Singleton
 	public Config config() {
 
-		Config config = ConfigUtils.loadConfig("/Users/aitanmilitao/Documents/COVID-BR/Chile/v2b/v2b/santiago/config_baseCase10pct_rev01.xml",new EpisimConfigGroup() );
+		Config config = ConfigUtils.loadConfig("scenarios/Chile/v2b/v2b/santiago/config_baseCase10pct_rev01.xml",new EpisimConfigGroup() );
 		//Config config = ConfigUtils.createConfig( new EpisimConfigGroup());
 		EpisimConfigGroup episimConfig = ConfigUtils.addOrGetModule(config, EpisimConfigGroup.class);
 		RoadPricingConfigGroup rpConfig = ConfigUtils.addOrGetModule(config, RoadPricingConfigGroup.class);
-		rpConfig.setTollLinksFile("/Users/aitanmilitao/Documents/COVID-BR/Chile/v2b/v2b/santiago/input/gantries.xml");
+		rpConfig.setTollLinksFile("scenarios//Chile/v2b/v2b/santiago/input/gantries.xml");
 
-		String url =  "/Users/aitanmilitao/Documents/COVID-BR/Chile/v2b/v2b/santiago/output_It0/0.events.xml.gz";
-
+		//It is better to download the events file and run it locally
+		//String url =  "scenarios/Chile/v2b/v2b/santiago/output_It0/0.events.xml.gz";
+		String url =  "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/cl/santiago/v2b/santiago/output/baseCase10pct/output_events.xml.gz";
 		episimConfig.setInputEventsFile(url);
 
 		episimConfig.setFacilitiesHandling(EpisimConfigGroup.FacilitiesHandling.bln);
