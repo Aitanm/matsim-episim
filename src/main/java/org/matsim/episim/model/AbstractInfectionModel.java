@@ -84,7 +84,9 @@ public abstract class AbstractInfectionModel implements InfectionModel {
 
 		String nextAct = person.getTrajectory().get(person.getCurrentPositionInTrajectory());
 
-		// TODO: tr is a hardcoded activity for "pt"
+		// TODO: tr is a hardcoded activity for "pt" .
+		//  Aitan June 20`: One should know if the vehicle is from PT from other form. Maybe adding the list of vehicles from the config ?
+		// Changing tr to pt
 		// last activity is only considered if present
 		return actIsRelevant("tr", episimConfig, restrictions, rnd) && actIsRelevant(nextAct, episimConfig, restrictions, rnd)
 				&& (lastAct.isEmpty() || actIsRelevant(lastAct, episimConfig, restrictions, rnd));

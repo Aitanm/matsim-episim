@@ -160,7 +160,7 @@ public final class InfectionEventHandler implements ActivityEndEventHandler, Per
 	public static boolean shouldHandlePersonEvent(HasPersonId event) {
 		// ignore pt drivers and drt
 		String id = event.getPersonId().toString();
-		return !id.startsWith("pt_pt") && !id.startsWith("pt_tr") && !id.startsWith("drt") && !id.startsWith("rt");
+		return !id.startsWith("pt_pt") && !id.startsWith("pt_tr") && !id.startsWith("drt") && !id.startsWith("rt") && !id.endsWith("bus") && !id.endsWith("subway");
 	}
 
 	/**
@@ -225,8 +225,18 @@ public final class InfectionEventHandler implements ActivityEndEventHandler, Per
 		// find the person:
 		EpisimPerson episimPerson = this.personMap.computeIfAbsent(entersVehicleEvent.getPersonId(), this::createPerson);
 
-		// find the vehicle:
-		EpisimVehicle episimVehicle = this.vehicleMap.computeIfAbsent(entersVehicleEvent.getVehicleId(), EpisimVehicle::new);
+		// find the vehicle: //there are vehicles from vehicles file and transit vehicles -> any car, bike etc is a vehicle..
+	//	Vehicle tempVeh = scenario.getVehicles().getVehicles().get(entersVehicleEvent.getVehicleId());
+	//	Id<Vehicle> idVehTemp = Id.createVehicleId(entersVehicleEvent.getVehicleId().toString().concat(tempVeh.getType().getId().toString()));
+	//	EpisimVehicle episimVehicle = this.vehicleMap.computeIfAbsent(idVehTemp, EpisimVehicle::new);
+		Id<Vehicle> idVehTemp;
+		if (scenario.getTransitVehicles().getVehicles().containsKey(entersVehicleEvent.getVehicleId())){
+			idVehTemp = Id.createVehicleId("tr_".concat(entersVehicleEvent.getVehicleId().toString()));
+		} else {
+			idVehTemp = entersVehicleEvent.getVehicleId();
+		}
+		EpisimVehicle episimVehicle = this.vehicleMap.computeIfAbsent(idVehTemp, EpisimVehicle::new);
+		//EpisimVehicle episimVehicle = this.vehicleMap.computeIfAbsent(entersVehicleEvent.getVehicleId(), EpisimVehicle::new);
 
 		// add person to vehicle and memorize entering time:
 		episimVehicle.addPerson(episimPerson, now);
@@ -242,7 +252,14 @@ public final class InfectionEventHandler implements ActivityEndEventHandler, Per
 		}
 
 		// find vehicle:
-		EpisimVehicle episimVehicle = this.vehicleMap.get(leavesVehicleEvent.getVehicleId());
+		Id<Vehicle> idVehTemp;
+		if (scenario.getTransitVehicles().getVehicles().containsKey(leavesVehicleEvent.getVehicleId())){
+			idVehTemp = Id.createVehicleId("tr_".concat(leavesVehicleEvent.getVehicleId().toString()));
+		} else {
+			idVehTemp = leavesVehicleEvent.getVehicleId();
+		}
+		EpisimVehicle episimVehicle = this.vehicleMap.get(idVehTemp);
+		//EpisimVehicle episimVehicle = this.vehicleMap.get(leavesVehicleEvent.getVehicleId());
 
 		EpisimPerson episimPerson = episimVehicle.getPerson(leavesVehicleEvent.getPersonId());
 
@@ -289,6 +306,8 @@ public final class InfectionEventHandler implements ActivityEndEventHandler, Per
 	private EpisimPerson createPerson(Id<Person> id) {
 
 		Person person = scenario.getPopulation().getPersons().get(id);
+		//added for test
+		log.warn("creating person with Id:" + person.getId());
 		Attributes attrs;
 		if (person != null) {
 			attrs = person.getAttributes();
